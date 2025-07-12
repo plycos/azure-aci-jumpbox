@@ -15,3 +15,44 @@ A lightweight Docker image designed for use as a jumpbox in [Azure Container Ins
 ```bash
   docker build -t azure-aci-jumpbox .
 ```
+
+## Deploy to Azure via CLI
+
+1. **Deploy to Azure Container Instances**
+#### Public Setup
+```bash
+az container create \
+  --resource-group <your-resource-group> \
+  --name aci-jumpbox \
+  --image ghcr.io/plycos/azure-aci-jumpbox:latest \
+  --cpu 1 --memory 1 \
+  --os-type Linux \
+  --restart-policy Never \
+  --ip-address Public
+```
+#### Subnet Setup
+```bash
+az container create \
+  --resource-group <your-resource-group> \
+  --name aci-jumpbox \
+  --image ghcr.io/plycos/azure-aci-jumpbox:latest \
+  --os-type Linux \
+  --cpu 1 --memory 1 \
+  --restart-policy Never \
+  --vnet <your-vnet> \
+  --subnet <your-subnet>
+```
+2. **Access the Jumpbox**
+```bash
+az container exec \
+  --resource-group <your-resource-group> \
+  --name aci-jumpbox \
+  --exec-command "/bin/bash" 
+```
+3. **Delete when Done**
+```bash
+az container delete \
+  --resource-group <your-resource-group> \
+  --name aci-jumpbox \
+  --yes
+```
